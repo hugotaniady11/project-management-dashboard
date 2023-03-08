@@ -14,6 +14,7 @@ const MainApp = () => {
   return (
     <div>
         <Header />
+        
             <Routes>
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/expenses" element={<Expenses />} />

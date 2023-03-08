@@ -6,7 +6,7 @@ const Members = () => {
 
   return (
     <>
-      <div class="p-4 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
+      <div class="p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
     <div class="w-full mb-1">
         <div class="mb-4">
             <nav class="flex mb-5" aria-label="Breadcrumb">
@@ -65,7 +65,7 @@ const Members = () => {
         </div>
     </div>
 </div>
-<div class="flex flex-col">
+<div class="flex flex-col m-8">
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
             <div class="overflow-hidden shadow">
