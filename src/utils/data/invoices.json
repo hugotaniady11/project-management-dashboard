@@ -1,0 +1,123 @@
+[
+    {
+    "project_id": 1,
+    "date": "03/06/2023",
+    "client_name": "Bella Barraclough",
+    "invoice_number": "1117119386",
+    "invoice_amount": 77830
+  }, {
+    "project_id": 2,
+    "date": "03/03/2023",
+    "client_name": "Hedvige McIlmorow",
+    "invoice_number": "6290863983",
+    "invoice_amount": 31647
+  }, {
+    "project_id": 3,
+    "date": "03/07/2023",
+    "client_name": "Marion Nucator",
+    "invoice_number": "1578411882",
+    "invoice_amount": 60615
+  }, {
+    "project_id": 4,
+    "date": "03/06/2023",
+    "client_name": "Gladi Quaif",
+    "invoice_number": "0097409340",
+    "invoice_amount": 40669
+  }, {
+    "project_id": 5,
+    "date": "03/07/2023",
+    "client_name": "Drucill Meineck",
+    "invoice_number": "2160484679",
+    "invoice_amount": 1708
+  }, {
+    "project_id": 6,
+    "date": "03/01/2023",
+    "client_name": "Dawna Cutchie",
+    "invoice_number": "7466755445",
+    "invoice_amount": 55971
+  }, {
+    "project_id": 7,
+    "date": "03/09/2023",
+    "client_name": "Darrell Prover",
+    "invoice_number": "7131795305",
+    "invoice_amount": 57326
+  }, {
+    "project_id": 8,
+    "date": "03/05/2023",
+    "client_name": "Sidney Kmicicki",
+    "invoice_number": "6026070079",
+    "invoice_amount": 78158
+  }, {
+    "project_id": 9,
+    "date": "03/03/2023",
+    "client_name": "Adan Goom",
+    "invoice_number": "7001191175",
+    "invoice_amount": 1272
+  }, {
+    "project_id": 10,
+    "date": "03/06/2023",
+    "client_name": "Carney Reide",
+    "invoice_number": "3375192991",
+    "invoice_amount": 67923
+  }, {
+    "project_id": 11,
+    "date": "03/09/2023",
+    "client_name": "Roselle McElvine",
+    "invoice_number": "9961641817",
+    "invoice_amount": 56036
+  }, {
+    "project_id": 12,
+    "date": "03/05/2023",
+    "client_name": "Sanders Yukhnov",
+    "invoice_number": "5623794467",
+    "invoice_amount": 55454
+  }, {
+    "project_id": 13,
+    "date": "03/09/2023",
+    "client_name": "Lanae Speechley",
+    "invoice_number": "8735050756",
+    "invoice_amount": 66278
+  }, {
+    "project_id": 14,
+    "date": "03/05/2023",
+    "client_name": "Otha Gourlie",
+    "invoice_number": "2288175702",
+    "invoice_amount": 77319
+  }, {
+    "project_id": 15,
+    "date": "03/01/2023",
+    "client_name": "Evangelina Welham",
+    "invoice_number": "7028365743",
+    "invoice_amount": 24759
+  }, {
+    "project_id": 16,
+    "date": "03/09/2023",
+    "client_name": "Tisha L'Hommeau",
+    "invoice_number": "8956732213",
+    "invoice_amount": 40709
+  }, {
+    "project_id": 17,
+    "date": "03/05/2023",
+    "client_name": "Stanford Spilisy",
+    "invoice_number": "6647607730",
+    "invoice_amount": 91424
+  }, {
+    "project_id": 18,
+    "date": "03/03/2023",
+    "client_name": "Richardo Molines",
+    "invoice_number": "8937206110",
+    "invoice_amount": 36609
+  }, {
+    "project_id": 19,
+    "date": "03/07/2023",
+    "client_name": "Trip Byron",
+    "invoice_number": "4769999550",
+    "invoice_amount": 63643
+  }, {
+    "project_id": 20,
+    "date": "03/07/2023",
+    "client_name": "Teresina Rippingall",
+    "invoice_number": "1312760370",
+    "invoice_amount": 24654
+  }
+]

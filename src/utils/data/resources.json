@@ -1,0 +1,103 @@
+[
+    {
+    "resource_id": 1,
+    "resource_name": "Luettgen-Kris",
+    "resource_type": "n/a",
+    "quantity": 85
+  }, {
+    "resource_id": 2,
+    "resource_name": "Homenick-Keeling",
+    "resource_type": "Public Utilities",
+    "quantity": 2
+  }, {
+    "resource_id": 3,
+    "resource_name": "Kertzmann LLC",
+    "resource_type": "Consumer Non-Durables",
+    "quantity": 21
+  }, {
+    "resource_id": 4,
+    "resource_name": "Stroman-Russel",
+    "resource_type": "Basic Industries",
+    "quantity": 57
+  }, {
+    "resource_id": 5,
+    "resource_name": "Moen-Reichert",
+    "resource_type": "Energy",
+    "quantity": 18
+  }, {
+    "resource_id": 6,
+    "resource_name": "Lubowitz, Rolfson and Batz",
+    "resource_type": "Consumer Services",
+    "quantity": 96
+  }, {
+    "resource_id": 7,
+    "resource_name": "Torp, Hagenes and Baumbach",
+    "resource_type": "n/a",
+    "quantity": 98
+  }, {
+    "resource_id": 8,
+    "resource_name": "Streich Inc",
+    "resource_type": "Health Care",
+    "quantity": 35
+  }, {
+    "resource_id": 9,
+    "resource_name": "Harvey LLC",
+    "resource_type": "Finance",
+    "quantity": 39
+  }, {
+    "resource_id": 10,
+    "resource_name": "O'Conner Inc",
+    "resource_type": "Technology",
+    "quantity": 73
+  }, {
+    "resource_id": 11,
+    "resource_name": "Kuvalis Group",
+    "resource_type": "Health Care",
+    "quantity": 65
+  }, {
+    "resource_id": 12,
+    "resource_name": "Cassin, Mitchell and Feil",
+    "resource_type": "Consumer Services",
+    "quantity": 60
+  }, {
+    "resource_id": 13,
+    "resource_name": "Koepp, Corkery and Altenwerth",
+    "resource_type": "Consumer Durables",
+    "quantity": 12
+  }, {
+    "resource_id": 14,
+    "resource_name": "Wilkinson, Adams and Fay",
+    "resource_type": "Health Care",
+    "quantity": 23
+  }, {
+    "resource_id": 15,
+    "resource_name": "Kihn Inc",
+    "resource_type": "Health Care",
+    "quantity": 4
+  }, {
+    "resource_id": 16,
+    "resource_name": "Schimmel-Emmerich",
+    "resource_type": "Finance",
+    "quantity": 86
+  }, {
+    "resource_id": 17,
+    "resource_name": "Schuster LLC",
+    "resource_type": "Health Care",
+    "quantity": 94
+  }, {
+    "resource_id": 18,
+    "resource_name": "Adams Inc",
+    "resource_type": "n/a",
+    "quantity": 81
+  }, {
+    "resource_id": 19,
+    "resource_name": "Rowe, Spinka and Walsh",
+    "resource_type": "Health Care",
+    "quantity": 15
+  }, {
+    "resource_id": 20,
+    "resource_name": "Runte, Veum and Pollich",
+    "resource_type": "Capital Goods",
+    "quantity": 42
+  }
+]
