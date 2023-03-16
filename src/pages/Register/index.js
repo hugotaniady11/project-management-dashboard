@@ -1,9 +1,9 @@
 import { react, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Input, Link } from '../../components'
+import { Button, Input } from '../../components'
 
 function Register() {
-  const initialValues = {username: "", email: "", password: "" };
+  const initialValues = { username: "", email: "", password: "" };
   const [formValues, setFormValues] = useState(initialValues);
   const [formErrors, setFormErrors] = useState({});
   const [isSubmit, setIsSubmit] = useState(false);
@@ -19,13 +19,14 @@ function Register() {
     setIsSubmit(true);
   };
 
-  
+
   const navigate = useNavigate();
-  
-  function handleNavigate(){
-    if(Object.keys(formErrors).length === 0 && isSubmit) {
+
+  function handleNavigate() {
+    if (Object.keys(formErrors).length === 0 && isSubmit) {
       navigate("/login");
-  }}
+    }
+  }
 
   useEffect(() => {
     console.log(formErrors);
@@ -40,7 +41,7 @@ function Register() {
     if (!values.username) {
       errors.username = "Username is required!";
     }
-    
+
     if (!values.email) {
       errors.email = "Email is required!";
     } else if (!regex.test(values.email)) {
@@ -60,33 +61,36 @@ function Register() {
 
   return (
 
-    <div class="flex justify-center items-center h-screen bg-kec-blue">
-      <pre class='hidden'>{JSON.stringify(formValues, undefined, 2)}</pre>
-      <form class="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={handleSubmit}>
-          <p class="text-3xl block text-center font-semibold">Register</p>
-          <hr class="mt-3"></hr>
-          
-          <div class="mt-3">
-                <label for="username" class="block text-base mb-2">Username</label>
-                <input type="text" name="username" class="border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Username" value={formValues.username} onChange={handleChange}/>
-            </div>
-            <div class="mt-3">
-                <label for="email" class="block text-base mb-2">Email</label>
-                <input type="text" name="email" class="border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Email"  value={formValues.email} onChange={handleChange}/>
-                </div>
-                <div class="mt-3">
-                <label for="password" class="block text-base mb-2">Password</label>
-                <input type="password" name="password" class="border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Password" value={formValues.Password} onChange={handleChange}/>
-                </div>
-            <div class="mt-3">
-            <Button onClick={handleNavigate} id="register" title="Register" />
-            </div>
-            <div class="mt-3">
-                <label for="signup" class="block text-sm mb-2">Already a member? <a href="/login" class="text-blue-600"> Sign In</a></label>
-                <input type="signup" name="signup"/>
-            </div>
+    <div className="flex justify-center items-center h-screen bg-kec-blue">
+      <pre className='hidden'>{JSON.stringify(formValues, undefined, 2)}</pre>
+      <form className="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={handleSubmit}>
+        <p className="text-3xl block text-center font-semibold">Register</p>
+        <hr className="mt-3"></hr>
+
+        <div className="mt-3">
+          <Input label="Username" type="text" name="username" placeholder="Enter Username" value={formValues.username} onChange={handleChange} />
+        </div>
+        <p className='text-sm text-red-600'>{formErrors.username}</p>
+
+        <div className="mt-3">
+          <Input label="Email" type="email" name="email" placeholder="Enter Email" value={formValues.email} onChange={handleChange} />
+        </div>
+        <p className='text-sm text-red-600'>{formErrors.email}</p>
+
+        <div className="mt-3">
+        <Input label="Password" type="password" name="password" placeholder="Enter Password" value={formValues.password} onChange={handleChange} />
+        </div>
+        <p className='text-sm text-red-600'>{formErrors.password}</p>
+
+        <div className="mt-3">
+          <Button onClick={handleNavigate} id="register" title="Register" />
+        </div>
+        <div className="mt-3">
+          <label for="signup" className="block text-sm mb-2">Already a member? <a href="/login" className="text-blue-600"> Sign In</a></label>
+          <input type="signup" name="signup" />
+        </div>
       </form>
-     </div>
+    </div>
   )
 }
 
