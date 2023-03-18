@@ -8,7 +8,8 @@ import Expenses from '../Expenses'
 import Invoices from '../Invoices'
 import Resources from '../Resources'
 import Members from '../Members';
-import NotFound from '../404'
+import MemberDetail from '../Members/[id]'
+import NotFound from '../404';
 import { Header, Footer, Sidebar } from '../../components'
 
 const MainApp = () => {
@@ -26,6 +27,7 @@ const MainApp = () => {
             <Route path="/resources" element={<Resources />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/members" element={<Members />} />
+            <Route path="/members/:id" element={<MemberDetail />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
