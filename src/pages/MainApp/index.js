@@ -15,11 +15,10 @@ import { Header, Footer, Sidebar } from '../../components'
 const MainApp = () => {
   return (
     <>
-    <div className='flex'>
+    <Header />
+    <div className='flex pt-16 overflow-hidden bg-gray-50'>
       <Sidebar />
-      <div className="container mx-auto ">
-      <Header />
-        
+      <div className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-8 ">
         <Routes>
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/expenses" element={<Expenses />} />
