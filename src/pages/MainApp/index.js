@@ -8,17 +8,17 @@ import Expenses from '../Expenses'
 import Invoices from '../Invoices'
 import Resources from '../Resources'
 import Members from '../Members';
-import NotFound from '../404'
+import MemberDetail from '../Members/[id]'
+import NotFound from '../404';
 import { Header, Footer, Sidebar } from '../../components'
 
 const MainApp = () => {
   return (
     <>
-    <div className='flex'>
+    <Header />
+    <div className='flex pt-16 overflow-hidden bg-gray-50'>
       <Sidebar />
-      <div className="container mx-auto ">
-      <Header />
-        
+      <div className="relative w-full h-full overflow-y-auto bg-gray-50 lg:ml-8 ">
         <Routes>
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/expenses" element={<Expenses />} />
@@ -26,6 +26,7 @@ const MainApp = () => {
             <Route path="/resources" element={<Resources />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/members" element={<Members />} />
+            <Route path="/members/:id" element={<MemberDetail />} />
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/" element={<Home />} />
             <Route path="*" element={<NotFound />} />
