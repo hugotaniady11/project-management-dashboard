@@ -12,7 +12,6 @@ useEffect(() => {
       setMembers(result)
     })
   }, [])
-  console.log(members);
 
   return (
     <>
