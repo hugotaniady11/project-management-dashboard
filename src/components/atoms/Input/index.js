@@ -4,7 +4,7 @@ const Input = ({label, ...rest}) => {
   return (
     <div>
         <p className='block text-base mb-2'>{label}</p>
-        <input className="border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" {...rest} />
+        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {...rest} />
     </div>
   )
 }
