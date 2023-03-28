@@ -1,5 +1,5 @@
 import React from "react";
-import KECLogo from "/Users/aksara/Desktop/project-management-dashboard/src/assets/KEC Logo - Blue 2.png";
+import KECLogo from "../src/assets/KEC Logo - Blue 2.png";
 
 const Header = () => {
     return (
