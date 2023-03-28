@@ -2,9 +2,9 @@ import React from 'react'
 
 const Input = ({label, ...rest}) => {
   return (
-    <div className="flex flex-col md:mr-16">
-        <p className='label'>{label}</p>
-        <input className="text-gray-600  focus:outline-none focus:border focus:border-indigo-700 dark:focus:border-indigo-700 dark:border-gray-700  bg-white font-normal w-64 h-10 flex items-center pl-3 text-sm border-gray-300 rounded border shadow" {...rest} />
+    <div>
+        <p className='block text-base mb-2'>{label}</p>
+        <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" {...rest} />
     </div>
   )
 }
