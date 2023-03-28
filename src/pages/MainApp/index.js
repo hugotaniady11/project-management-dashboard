@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState, useEffect, useNavigate } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Projects from '../Projects'
+import ProjectId from '../Projects/[id]'
 import Tasks from '../Tasks'
 import Home from '../Home'
 import Analytics from '../Analytics'
@@ -12,7 +13,11 @@ import MemberDetail from '../Members/[id]'
 import NotFound from '../404';
 import { Header, Footer, Sidebar } from '../../components'
 
+
 const MainApp = () => {
+  
+  const [user, setUser] = useState(null);
+
   return (
     <>
     <Header />
@@ -25,6 +30,7 @@ const MainApp = () => {
             <Route path="/invoices" element={<Invoices />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/projects/:id" element={<ProjectId />} />
             <Route path="/members" element={<Members />} />
             <Route path="/members/:id" element={<MemberDetail />} />
             <Route path="/tasks" element={<Tasks />} />
