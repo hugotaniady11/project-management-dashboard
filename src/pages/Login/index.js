@@ -67,7 +67,7 @@ function Login() {
           <div>
                 <div class="mt-3">
                 <label for="email" class="block text-base mb-2">Email</label>
-                <input type="text" name="email" class="border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Email"  value={formValues.email} onChange={handleChange}/>
+                <input type="text" name="email" class=" border w-full text-sm px-2 py-1 focus:outline-none focus:ring-0 focus:border-gray-600" placeholder="Enter Email"  value={formValues.email} onChange={handleChange}/>
                 </div>
                 <p class='text-sm text-red-600'>{formErrors.email}</p>
 
