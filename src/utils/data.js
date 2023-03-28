@@ -11,6 +11,7 @@ export const getAllMembers = async() => {
     return members.data
 }
 
+
 export const getAllProjects = async() => {
     const projects = await axios.get(`${baseUrl}api/projects`)
     return projects.data
@@ -24,4 +25,5 @@ export const getProjectById = async(project_id) => {
 export const getMemberById = async(member_id) => {
     const member = await axios.get(`${baseUrl}api/members/${member_id}`)
     return member
+
 }

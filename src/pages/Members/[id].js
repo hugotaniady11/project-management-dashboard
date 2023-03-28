@@ -1,10 +1,9 @@
 import { getMemberById } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Input } from '../../components';
 
 const MemberId = () => {
-  const { id } = useParams();
+    const { id } = useParams();
   const [member, setMember] = useState(null);
   const [formDisabled, setFormDisabled] = useState(true);
 
@@ -19,8 +18,7 @@ const MemberId = () => {
   if (!member) {
     return <div>Loading...</div>;
   }
-
-
+      console.log(member);
   return (
     <>
       <div className='p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 '>
