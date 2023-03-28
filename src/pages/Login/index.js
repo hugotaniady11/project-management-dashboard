@@ -62,10 +62,6 @@ function Login() {
         <p class="text-3xl block text-center font-semibold">Hello, Welcome Back</p>
         <hr class="mt-3"></hr>
         <div class="mt-3"></div>
-
-        <div>
-          <div class="mt-3">
-            <Input label="Email" type="text" name="email" placeholder="Enter Email" value={formValues.email} onChange={handleChange} />
           </div>
           <p class='text-sm text-red-600'>{formErrors.email}</p>
 
