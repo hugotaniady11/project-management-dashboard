@@ -7,7 +7,7 @@ export const getAllMembers = async() => {
     return members.data
 }
 
-export const getMemberById = async(member_id) => {
-    const member = await axios.get(`${baseUrl}api/members/${member_id}`)
-    return member
+export const getMemberById = async(id) => {
+    const members = await axios.get(`${baseUrl}api/members/${id}`)
+    return members
 }
