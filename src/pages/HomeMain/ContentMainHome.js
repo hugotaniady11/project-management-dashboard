@@ -1,5 +1,5 @@
 import React from "react";
-import Button from '/Users/aksara/Desktop/project-management-dashboard/src/components/atoms/Button/index.js';
+import { Input, Button } from '../../components';
 import Sertification from '/Users/aksara/Desktop/project-management-dashboard/src/assets/Sertifikat.png';
 import { useNavigate } from "react-router-dom";
 
