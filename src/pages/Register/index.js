@@ -1,89 +1,63 @@
-import { react, useState, useEffect } from "react";
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import { Button, Input } from '../../components'
+import { Input, Button } from '../../components';
 
 function Register() {
-  const initialValues = { username: "", email: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormErrors(validate(formValues));
-    setIsSubmit(true);
-  };
-
-
   const navigate = useNavigate();
-
-  function handleNavigate() {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      navigate("/login");
-    }
-  }
-
-  useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
-    }
-  }, [formErrors]);
-  const validate = (values) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-
-    if (!values.username) {
-      errors.username = "Username is required!";
-    }
-
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email format!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required!";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    return errors;
-  };
-
-
+  const [error, setError] = useState(null);
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      email:'',
+      password: ''
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().min(5, 'Username minimal 5 characters long').required('Required'),
+      email: Yup.string().email().required('Required'),
+      password: Yup.string()
+      // .min(8, 'Password must be 8 characters long')
+      // .matches(/[0-9]/, 'Password requires a number')
+      // .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .required('Required')
+    }),
+    onSubmit: async(values) => {
+      try {
+        await axios.post(`https://server-dashboard-beta.vercel.app/api/register`, values);
+        navigate('/login');
+      } catch (error) {
+        setError(error.response.data.message);
+      }
+      // Panggil API login di sini dan verifikasi kredensial pengguna
+    },
+  });
 
   return (
-
     <div className="flex justify-center items-center h-screen bg-kec-blue">
-      <pre className='hidden'>{JSON.stringify(formValues, undefined, 2)}</pre>
-      <form className="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={handleSubmit}>
+      <form className="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={formik.handleSubmit}>
+        {error && <div className="text-sm text-red-600 text-center">{error}</div>}
         <p className="text-3xl block text-center font-semibold">Register</p>
         <hr className="mt-3"></hr>
 
         <div className="mt-3">
-          <Input label="Username" type="text" name="username" placeholder="Enter Username" value={formValues.username} onChange={handleChange} />
+          <Input label="Username" type="text" name="username" placeholder="Enter Username" onChange={formik.handleChange} value={formik.values.username} />
         </div>
-        <p className='text-sm text-red-600'>{formErrors.username}</p>
+        {formik.errors.username && <p className="text-sm text-red-600">{formik.errors.username}</p>}
 
         <div className="mt-3">
-          <Input label="Email" type="email" name="email" placeholder="Enter Email" value={formValues.email} onChange={handleChange} />
+          <Input label="Email" type="email" name="email" placeholder="Enter Email" onChange={formik.handleChange} value={formik.values.email} />
         </div>
-        <p className='text-sm text-red-600'>{formErrors.email}</p>
+        {formik.errors.email && <p className="text-sm text-red-600">{formik.errors.email}</p>}
 
         <div className="mt-3">
-        <Input label="Password" type="password" name="password" placeholder="Enter Password" value={formValues.password} onChange={handleChange} />
+        <Input label="Password" type="password" name="password" placeholder="Enter Password" onChange={formik.handleChange} value={formik.values.password} />
         </div>
-        <p className='text-sm text-red-600'>{formErrors.password}</p>
+        {formik.errors.password && <p className="text-sm text-red-600">{formik.errors.password}</p>}
 
         <div className="mt-3">
-          <Button onClick={handleNavigate} id="register" title="Register" />
+          <Button id="register" title="Register" />
         </div>
         <div className="mt-3">
           <label for="signup" className="block text-sm mb-2">Already a member? <a href="/login" className="text-blue-600"> Sign In</a></label>
@@ -95,4 +69,4 @@ function Register() {
 }
 
 
-export default Register
+export default Register;

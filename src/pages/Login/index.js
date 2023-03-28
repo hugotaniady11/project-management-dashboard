@@ -1,90 +1,68 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button, Input } from '../../components'
+import React, { useState } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { Input, Button } from '../../components';
+import { httpClient } from '../../utils/data';
 
-
-function Login() {
-  const initialValues = { email: "", password: "" };
-  const [formValues, setFormValues] = useState(initialValues);
-  const [formErrors, setFormErrors] = useState({});
-  const [isSubmit, setIsSubmit] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setFormErrors(validate(formValues));
-    setIsSubmit(true);
-  };
-
-
+function Login({ setToken }) {
   const navigate = useNavigate();
-
-  function handleNavigate() {
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      navigate("/");
-    }
-  }
-
-  useEffect(() => {
-    console.log(formErrors);
-    if (Object.keys(formErrors).length === 0 && isSubmit) {
-      console.log(formValues);
-    }
-  }, [formErrors]);
-  const validate = (values) => {
-    const errors = {};
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-
-    if (!values.email) {
-      errors.email = "Email is required!";
-    } else if (!regex.test(values.email)) {
-      errors.email = "This is not a valid email format!";
-    }
-    if (!values.password) {
-      errors.password = "Password is required!";
-    } else if (values.password.length < 4) {
-      errors.password = "Password must be more than 4 characters";
-    } else if (values.password.length > 10) {
-      errors.password = "Password cannot exceed more than 10 characters";
-    }
-    return errors;
-  };
-
+  const [error, setError] = useState(null);
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: ''
+    },
+    validationSchema: Yup.object({
+      username: Yup.string().min(5, 'Username minimal 5 characters long').required('Required'),
+      password: Yup.string()
+      // .min(8, 'Password must be 8 characters long')
+      // .matches(/[0-9]/, 'Password requires a number')
+      // .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .required('Required')
+    }),
+    onSubmit: async(values) => {
+      try {
+        const res = await httpClient.post(`api/login`, values);
+        localStorage.setItem('token', res.data.token);
+        navigate('/');
+      } catch (error) {
+        setError(error.response.data.message);
+      }
+      // Panggil API login di sini dan verifikasi kredensial pengguna
+    },
+  });
 
   return (
-
-    <div class="flex justify-center items-center h-screen bg-kec-blue">
-      <form class="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={handleSubmit}>
-        <p class="text-3xl block text-center font-semibold">Hello, Welcome Back</p>
-        <hr class="mt-3"></hr>
-        <div class="mt-3"></div>
+    <>
+      <div className="flex justify-center items-center h-screen bg-kec-blue">
+        <form className="w-96 p-6 shadow-lg bg-white rounded-md" onSubmit={formik.handleSubmit}>
+        {error && <div className="text-sm text-red-600 text-center">{error}</div>}
+          <p className="text-3xl block text-center font-semibold">Login</p>
+          <hr className="mt-3" />
+          <div className='mt-3'>
+            <Input label="Username" id='username' name='username' type='text' placeholder='Enter Username' onChange={formik.handleChange} value={formik.values.username} />
           </div>
-          <p class='text-sm text-red-600'>{formErrors.email}</p>
+          {formik.errors.username && <p className="text-sm text-red-600">{formik.errors.username}</p>}
 
-
-          <div class="mt-3">
-            <Input label="Password" type="password" name="password" placeholder="Enter Password" value={formValues.Password} onChange={handleChange} />
+          <div className='mt-3'>
+            <Input label="Password" id='password' name='password' type='password' placeholder='Enter Password' onChange={formik.handleChange} value={formik.values.password} />
           </div>
-          <p class='text-sm text-red-600'>{formErrors.password}</p>
-
-          <div class="mt-3">
-            <Button onClick={handleNavigate} id="submit" title="Login" />
-
+          {formik.errors.password && <p className="text-sm text-red-600">{formik.errors.password}</p>}
+          
+          <div className="mt-3">
+            <Button id="login" title="Login" />
           </div>
+
           <div class="mt-3">
             <label for="signup" class="block text-sm mb-2">not a member? <a href="/register" class="text-blue-600"> Sign up now</a></label>
             <input type="signup" name="signup" />
 
           </div>
-        </div>
+        </form>
+      </div>
+    </>
+  );
+};
 
-      </form>
-    </div>
-  )
-}
-
-export default Login
+export default Login;
