@@ -11,7 +11,7 @@ const indexRoutes = () => {
           <Routes>
               <Route path="/login" element={<Login/>} />
               <Route path="/register" element={<Register/>} />
-              <Route path="/HomeMain" element={<HomeMain/>} />
+              <Route path="/homemain" element={<HomeMain/>} />
               <Route path="*" element={<MainApp/>} />
           </Routes>
       </Router>

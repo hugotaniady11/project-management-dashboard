@@ -1,6 +1,7 @@
 import { getMemberById } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Input } from '../../components';
 
 const MemberId = () => {
     const { id } = useParams();

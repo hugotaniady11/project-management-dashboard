@@ -1,7 +1,7 @@
 import React from 'react'
 import Design from "./Design.js"
 import Header from "./Header.js"
-import ContentMainHome from '../src/pages/HomeMain/ContentMainHome.js'
+import ContentMainHome from './ContentMainHome.js'
 
 const HomeMain = () => {
   

@@ -1,6 +1,6 @@
 import React from "react";
 import { Input, Button } from '../../components';
-import Sertification from '../src/assets/Sertifikat.png';
+import Sertification from "../../assets/Sertifikat.png"
 import { useNavigate } from "react-router-dom";
 
 const ContentMainHome = () => {
