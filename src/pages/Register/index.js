@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { Input, Button } from '../../components';
+import { httpClient } from '../../utils/data';
+
 
 function Register() {
+  const baseUrl = process.env.REACT_APP_KEWO_API;
+
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const formik = useFormik({
@@ -18,15 +21,23 @@ function Register() {
       username: Yup.string().min(5, 'Username minimal 5 characters long').required('Required'),
       email: Yup.string().email().required('Required'),
       password: Yup.string()
-      // .min(8, 'Password must be 8 characters long')
-      // .matches(/[0-9]/, 'Password requires a number')
-      // .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .min(8, 'Password must be 8 characters long')
+      .matches(/[0-9]/, 'Password requires a number')
+      .matches(/[a-z]/, 'Password requires a lowercase letter')
       .required('Required')
     }),
     onSubmit: async(values) => {
       try {
-        await axios.post(`https://server-dashboard-beta.vercel.app/api/register`, values);
-        navigate('/login');
+        await httpClient
+          .post(`api/register`, values)
+          .then((res) => {
+            if(res.data.accessToken) {
+              localStorage.setItem("user", res.data.accessToken);
+            }
+
+            return res.data;
+          })
+          navigate('/login');
       } catch (error) {
         setError(error.response.data.message);
       }
