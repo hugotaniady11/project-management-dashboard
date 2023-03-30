@@ -1,12 +1,14 @@
-import { getMemberById } from '../../utils/data'
+import { getMemberById, updateMember } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Input } from '../../components';
+import { Input, Button } from '../../components';
+import swal from 'sweetalert';
+
 
 const MemberId = () => {
-    const { id } = useParams();
+  const { id } = useParams();
   const [member, setMember] = useState(null);
-  const [formDisabled, setFormDisabled] = useState(true);
+  // const [formDisabled, setFormDisabled] = useState(true);
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -15,11 +17,28 @@ const MemberId = () => {
     };
     fetchMember();
   }, [id]);
+
+  const handleUpdateMember = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const formDataObj = Object.fromEntries(formData.entries())
+    const payload = {...formDataObj,};
+    const formPayload = new FormData();
+    Object.entries(payload).forEach(([key, val]) => formPayload.append(key, val));
+
+    return updateMember(id, formPayload)
+    .then(() => { swal(`Success! Memebr ID: ${id} has been updated`, { icon: 'success' }) })
+    .catch((e) => {
+      console.error(e.response.data.message);
+      swal(`Failed: ${e.response.data.message}`, { icon: 'error' });
+    });
+
+  }
   
   if (!member) {
     return <div>Loading...</div>;
   }
-      console.log(member);
+
   return (
     <>
       <div className='p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 '>
@@ -28,23 +47,26 @@ const MemberId = () => {
 
 
       <section className="p-8">
-        <form action="" className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form action="" className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={(e) => handleUpdateMember(e)}>
           <fieldset className="rounded-md shadow-sm">
             <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
               <div className="col-span-full sm:col-span-3">
-                <Input label="Name" type="text" name="name" placeholder="Enter Name" defaultValue={member ? member.name : ''} disabled={formDisabled} />
+                <Input label="Name" type="text" name="name" placeholder="Enter Name" defaultValue={member ? member.name : ''} />
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Email" type="email" name="email" placeholder="Enter Email" defaultValue={member ? member.email : ''} disabled={formDisabled} />
+                <Input label="Email" type="email" name="email" placeholder="Enter Email" defaultValue={member ? member.email : ''} />
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" defaultValue={member ? member.jobTitle : ''} disabled={formDisabled} />
+                <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" defaultValue={member ? member.jobTitle : ''} />
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Department" type="text" name="department" placeholder="Enter Department" defaultValue={member ? member.department : ''} disabled={formDisabled} />
+                <Input label="Department" type="text" name="department" placeholder="Enter Department" defaultValue={member ? member.department : ''} />
               </div>
             </div>
           </fieldset>
+          <div className='py-4'>
+          <Button id="login" title="Submit"/>
+        </div>
         </form>
 
         {member.project_manager != 0 && (
@@ -89,6 +111,8 @@ const MemberId = () => {
             </div>
           </div>
         )}
+
+        
       </section>
 
     </>

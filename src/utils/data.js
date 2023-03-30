@@ -40,3 +40,11 @@ export const deleteMember = async(member_id) => {
     const member = await axios.delete(`${baseUrl}api/members/${member_id}`)
     return member
 }
+
+export const updateMember = async(member_id, payload) => {
+    const member = await axios.put(`${baseUrl}api/members/${member_id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }})
+    return member.data
+}
