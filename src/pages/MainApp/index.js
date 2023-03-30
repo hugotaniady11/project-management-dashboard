@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useNavigate } from 'react'
+import React, { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Projects from '../Projects'
 import ProjectId from '../Projects/[id]'
@@ -15,9 +15,6 @@ import { Header, Footer, Sidebar } from '../../components'
 
 
 const MainApp = () => {
-  
-  const [user, setUser] = useState(null);
-
   return (
     <>
     <Header />

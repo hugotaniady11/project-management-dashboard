@@ -5,27 +5,34 @@ import { useNavigate } from 'react-router-dom';
 import { Input, Button } from '../../components';
 import { httpClient } from '../../utils/data';
 
-function Login({ setToken }) {
+function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
   const formik = useFormik({
     initialValues: {
-      username: '',
+      email: '',
       password: ''
     },
     validationSchema: Yup.object({
-      username: Yup.string().min(5, 'Username minimal 5 characters long').required('Required'),
+      email: Yup.string().email().required('Required'),
       password: Yup.string()
-      // .min(8, 'Password must be 8 characters long')
-      // .matches(/[0-9]/, 'Password requires a number')
-      // .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .min(8, 'Password must be 8 characters long')
+      .matches(/[0-9]/, 'Password requires a number')
+      .matches(/[a-z]/, 'Password requires a lowercase letter')
       .required('Required')
     }),
     onSubmit: async(values) => {
       try {
-        const res = await httpClient.post(`api/login`, values);
-        localStorage.setItem('token', res.data.token);
-        navigate('/');
+        await httpClient
+          .post(`api/login`, values)
+          .then((res) => {
+            if(res.data.accessToken) {
+              localStorage.setItem("user", res.data.accessToken);
+            }
+            return res.data;
+          })
+          navigate('/');
+          window.location.reload();
       } catch (error) {
         setError(error.response.data.message);
       }
@@ -41,9 +48,9 @@ function Login({ setToken }) {
           <p className="text-3xl block text-center font-semibold">Login</p>
           <hr className="mt-3" />
           <div className='mt-3'>
-            <Input label="Username" id='username' name='username' type='text' placeholder='Enter Username' onChange={formik.handleChange} value={formik.values.username} />
+            <Input label="Email" id='email' name='email' type='email' placeholder='Enter Email' onChange={formik.handleChange} value={formik.values.email} />
           </div>
-          {formik.errors.username && <p className="text-sm text-red-600">{formik.errors.username}</p>}
+          {formik.errors.email && <p className="text-sm text-red-600">{formik.errors.email}</p>}
 
           <div className='mt-3'>
             <Input label="Password" id='password' name='password' type='password' placeholder='Enter Password' onChange={formik.handleChange} value={formik.values.password} />
