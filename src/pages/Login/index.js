@@ -27,7 +27,7 @@ function Login() {
           .post(`api/login`, values)
           .then((res) => {
             if(res.data.accessToken) {
-              localStorage.setItem("user", res.data.accessToken);
+              localStorage.setItem("user", res.data.refreshToken);
             }
             return res.data;
           })

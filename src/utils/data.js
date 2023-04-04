@@ -48,3 +48,8 @@ export const updateMember = async(member_id, payload) => {
         }})
     return member.data
 }
+
+export const getDepartments = async() => {
+    const departments = await axios.get(`${baseUrl}api/department`)
+    return departments.data
+}
