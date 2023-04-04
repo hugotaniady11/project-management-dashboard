@@ -1,14 +1,37 @@
 import { getMemberById, updateMember } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Input, Button } from '../../components';
+import { Input, Button, Dropdown } from '../../components';
 import swal from 'sweetalert';
+import jwtDecode from 'jwt-decode';
 
 
 const MemberId = () => {
   const { id } = useParams();
   const [member, setMember] = useState(null);
-  // const [formDisabled, setFormDisabled] = useState(true);
+  const depart = ["Engineering", "Project Management", "Drafter", "Marketing"];
+
+  const user = localStorage.getItem('user');
+  const decodedToken = jwtDecode(user);
+  const userData = decodedToken;
+
+  // console.log(userData)
+
+
+  const renderSelect = (arr, selectedVal) => {
+    return (
+      <>
+        <option value="" disabled>Pilih satu</option>
+        {
+          arr.length && arr.map((val) => {
+            const value = val.id ? val.id : val
+            return (<option key={val.id} value={val.id || val} selected={value === selectedVal} >{val.name || val}</option>)
+          })
+        }
+      </>
+    )
+  }
+  const [formDisabled, setFormDisabled] = useState(true);
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -16,57 +39,69 @@ const MemberId = () => {
       setMember(res.data);
     };
     fetchMember();
+    if (userData.account_type === 'SUPER_ADMIN') setFormDisabled(false);
   }, [id]);
 
   const handleUpdateMember = (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formDataObj = Object.fromEntries(formData.entries())
-    const payload = {...formDataObj,};
+    const payload = { ...formDataObj, };
     const formPayload = new FormData();
     Object.entries(payload).forEach(([key, val]) => formPayload.append(key, val));
 
     return updateMember(id, formPayload)
-    .then(() => { swal(`Success! Memebr ID: ${id} has been updated`, { icon: 'success' }) })
-    .catch((e) => {
-      console.error(e.response.data.message);
-      swal(`Failed: ${e.response.data.message}`, { icon: 'error' });
-    });
+      .then(() => { swal(`Success! Member ID: ${id} has been updated`, { icon: 'success' }) })
+      .then(() => { setTimeout(() => {
+        window.location.reload();
+      }, 2000)})
+      .catch((e) => {
+        console.error(e.response.data.message);
+        
+        swal(`Failed: ${e.response.data.message}`, { icon: 'error' });
+      });
 
   }
-  
+
   if (!member) {
     return <div>Loading...</div>;
   }
+
+  
 
   return (
     <>
       <div className='p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 '>
         Member Id: {member.member_id}
+        <h1>Welcome, {userData.username}!</h1>
       </div>
 
-
-      <section className="p-8">
+    <section className="p-8">
         <form action="" className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={(e) => handleUpdateMember(e)}>
           <fieldset className="rounded-md shadow-sm">
             <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
               <div className="col-span-full sm:col-span-3">
-                <Input label="Name" type="text" name="name" placeholder="Enter Name" defaultValue={member ? member.name : ''} />
+                <Input label="Name" type="text" name="name" placeholder="Enter Name" defaultValue={member ? member.name : ''} disabled={formDisabled} />
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Email" type="email" name="email" placeholder="Enter Email" defaultValue={member ? member.email : ''} />
+                <Input label="Email" type="email" name="email" placeholder="Enter Email" defaultValue={member ? member.email : ''} disabled={formDisabled}/>
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" defaultValue={member ? member.jobTitle : ''} />
+                <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" defaultValue={member ? member.jobTitle : ''} disabled={formDisabled}/>
               </div>
               <div className="col-span-full sm:col-span-3">
-                <Input label="Department" type="text" name="department" placeholder="Enter Department" defaultValue={member ? member.department : ''} />
+                <Dropdown label="Department"  name="department" defaultValue={member && member.department} disabled={formDisabled}>
+                  {renderSelect(depart, member && member.department)}
+                </ Dropdown>
               </div>
             </div>
           </fieldset>
-          <div className='py-4'>
-          <Button id="login" title="Submit"/>
-        </div>
+          {userData.account_type === 'SUPER_ADMIN' ? (
+            <div className='py-4'>
+            <Button id="login" title="Submit" />
+          </div>
+          ) : ("")}
+          
         </form>
 
         {member.project_manager != 0 && (
@@ -112,8 +147,9 @@ const MemberId = () => {
           </div>
         )}
 
-        
+
       </section>
+      
 
     </>
   )
