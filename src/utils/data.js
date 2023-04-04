@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwtDecode from 'jwt-decode';
 
 const baseUrl = process.env.REACT_APP_KEWO_API;
 
@@ -11,8 +12,19 @@ export const logout = () => {
 }
 
 export const getCurrentUser = () => {
-    const user = JSON.parse(JSON.stringify(localStorage.getItem("user")));
-  return user;
+    const user = localStorage.getItem('user');
+    if (user){
+        const decodedToken = jwtDecode(user, { header: true });
+        const expirationDate = decodedToken.exp;
+         var current_time = Date.now() / 1000;
+         if(expirationDate < current_time)
+         {
+             localStorage.removeItem("user");
+         }
+         const userData = decodedToken;
+         return userData
+      }
+ 
 }
 
 export const getAllProjects = async() => {
