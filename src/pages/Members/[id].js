@@ -1,21 +1,17 @@
-import { getMemberById, updateMember } from '../../utils/data'
+import { getMemberById, updateMember, getCurrentUser } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Input, Button, Dropdown } from '../../components';
 import swal from 'sweetalert';
-import jwtDecode from 'jwt-decode';
 
 
 const MemberId = () => {
   const { id } = useParams();
   const [member, setMember] = useState(null);
+  const user = getCurrentUser();
   const depart = ["Engineering", "Project Management", "Drafter", "Marketing"];
-
-  const user = localStorage.getItem('user');
-  const decodedToken = jwtDecode(user);
-  const userData = decodedToken;
-
-  // console.log(userData)
+  
+  console.log(user)
 
 
   const renderSelect = (arr, selectedVal) => {
@@ -39,7 +35,7 @@ const MemberId = () => {
       setMember(res.data);
     };
     fetchMember();
-    if (userData.account_type === 'SUPER_ADMIN') setFormDisabled(false);
+    if (user.account_type === 'SUPER_ADMIN') setFormDisabled(false);
   }, [id]);
 
   const handleUpdateMember = (e) => {
@@ -73,7 +69,7 @@ const MemberId = () => {
     <>
       <div className='p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 '>
         Member Id: {member.member_id}
-        <h1>Welcome, {userData.username}!</h1>
+        <h1>Welcome, {user.username}!</h1>
       </div>
 
     <section className="p-8">
@@ -96,7 +92,7 @@ const MemberId = () => {
               </div>
             </div>
           </fieldset>
-          {userData.account_type === 'SUPER_ADMIN' ? (
+          {user.account_type === 'SUPER_ADMIN' ? (
             <div className='py-4'>
             <Button id="login" title="Submit" />
           </div>
