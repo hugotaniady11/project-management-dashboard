@@ -65,3 +65,28 @@ export const getDepartments = async() => {
     const departments = await axios.get(`${baseUrl}api/department`)
     return departments.data
 }
+
+export const getAllResources = async(page, limit) => {
+    const response = await axios.get(`${baseUrl}api/resources/?page=${page}&limit=${limit}`);
+  
+    return response.data;
+}
+
+export const getResourceById = async(id) => {
+    const resource = await axios.get(`${baseUrl}api/resources/${id}`)
+    return resource
+
+}
+
+export const deleteResource = async(id) => {
+    const resource = await axios.delete(`${baseUrl}api/resources/${id}`)
+    return resource
+}
+
+export const updateResource = async(id, payload) => {
+    const resource = await axios.put(`${baseUrl}api/members/${id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }})
+    return resource.data
+}
