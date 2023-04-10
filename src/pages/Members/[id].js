@@ -69,7 +69,6 @@ const MemberId = () => {
     <>
       <div className='p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 '>
         Member Id: {member.member_id}
-        <h1>Welcome, {user.username}!</h1>
       </div>
 
     <section className="p-8">

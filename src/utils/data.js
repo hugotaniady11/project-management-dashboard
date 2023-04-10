@@ -12,9 +12,9 @@ export const logout = () => {
 }
 
 export const getCurrentUser = () => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user){
-        const decodedToken = jwtDecode(user, { header: true });
+        const decodedToken = jwtDecode(user);
         const expirationDate = decodedToken.exp;
          var current_time = Date.now() / 1000;
          if(expirationDate < current_time)
@@ -64,4 +64,29 @@ export const updateMember = async(member_id, payload) => {
 export const getDepartments = async() => {
     const departments = await axios.get(`${baseUrl}api/department`)
     return departments.data
+}
+
+export const getAllResources = async() => {
+    const response = await axios.get(`${baseUrl}api/resources/`);
+  
+    return response.data;
+}
+
+export const getResourceById = async(id) => {
+    const resource = await axios.get(`${baseUrl}api/resources/${id}`)
+    return resource
+
+}
+
+export const deleteResource = async(id) => {
+    const resource = await axios.delete(`${baseUrl}api/resources/${id}`)
+    return resource
+}
+
+export const updateResource = async(id, payload) => {
+    const resource = await axios.put(`${baseUrl}api/members/${id}`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }})
+    return resource.data
 }
