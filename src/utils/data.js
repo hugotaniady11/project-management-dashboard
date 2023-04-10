@@ -12,9 +12,9 @@ export const logout = () => {
 }
 
 export const getCurrentUser = () => {
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user){
-        const decodedToken = jwtDecode(user, { header: true });
+        const decodedToken = jwtDecode(user);
         const expirationDate = decodedToken.exp;
          var current_time = Date.now() / 1000;
          if(expirationDate < current_time)
@@ -66,8 +66,8 @@ export const getDepartments = async() => {
     return departments.data
 }
 
-export const getAllResources = async(page, limit) => {
-    const response = await axios.get(`${baseUrl}api/resources/?page=${page}&limit=${limit}`);
+export const getAllResources = async() => {
+    const response = await axios.get(`${baseUrl}api/resources/`);
   
     return response.data;
 }
