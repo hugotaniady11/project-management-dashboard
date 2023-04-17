@@ -1,7 +1,7 @@
 import { getMemberById, updateMember, getCurrentUser } from '../../utils/data'
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Input, Button, Dropdown } from '../../components';
+import { Input, Button, Dropdown, Image } from '../../components';
 import swal from 'sweetalert';
 
 
@@ -28,6 +28,7 @@ const MemberId = () => {
     )
   }
   const [formDisabled, setFormDisabled] = useState(true);
+  const baseUrl = process.env.REACT_APP_KEWO_API;
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -75,6 +76,10 @@ const MemberId = () => {
         <form action="" className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" onSubmit={(e) => handleUpdateMember(e)}>
           <fieldset className="rounded-md shadow-sm">
             <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+            <div className="col-span-full sm:col-span-3">
+                <Image label="Picture" placeholder="Enter Picture" src={`${baseUrl}/${member.image}`} />
+              </div>
+              <div></div>
               <div className="col-span-full sm:col-span-3">
                 <Input label="Name" type="text" name="name" placeholder="Enter Name" defaultValue={member ? member.name : ''} disabled={formDisabled} />
               </div>
