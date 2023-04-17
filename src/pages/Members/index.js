@@ -13,6 +13,7 @@ const Members = () => {
     const records = members.slice(firstIndex, lastIndex);
     const npage = Math.ceil(members.length / recordsPerPage)
     const numbers = [...Array(npage + 1).keys()].slice(1);
+    const baseUrl = process.env.REACT_APP_KEWO_API;
 
     const user = getCurrentUser();
     useEffect(() => {
@@ -111,7 +112,7 @@ const Members = () => {
                                         <tr className="hover:bg-gray-100" key={data.member_id}>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.member_id} </td>
                                             <td className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                                <img className="w-10 h-10 rounded-full" src="https://www.radiovenusfm.com/wp-content/uploads/2019/01/portrait-square-10.jpg" alt="avatar" />
+                                                <img className="w-10 h-10 rounded-full" src={`${baseUrl}/${data.image}`} alt={data.name} />
 
                                                 <div className="text-sm font-normal text-gray-500 ">
                                                     <div className="text-base font-semibold text-gray-900 "> {data.name} </div>
