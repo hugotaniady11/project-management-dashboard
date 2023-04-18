@@ -88,10 +88,22 @@ const Header = () => {
                       aria-labelledby="menu-button"
                     >
                       <p
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                        role="menuitem"
+                      >
+                        {admin.username}
+                      </p>
+                      <p
+                        className="block px-4 py-1 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                         role="menuitem"
                       >
                         {admin.email}
+                      </p>
+                      <p
+                        className="block px-4 py-1 text-sm text-gray-700 font-bold hover:bg-gray-100 hover:text-gray-900"
+                        role="menuitem"
+                      >
+                        {admin.account_type}
                       </p>
                       <a
                         href="/login"
