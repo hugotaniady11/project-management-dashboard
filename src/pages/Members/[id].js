@@ -77,7 +77,7 @@ const MemberId = () => {
           <fieldset className="rounded-md shadow-sm">
             <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
             <div className="col-span-full sm:col-span-3">
-                <Image label="Picture" placeholder="Enter Picture" src={`${baseUrl}/${member.image}`} />
+                <Image label="Picture" placeholder="Enter Picture" src={`${baseUrl}/${member.file}`} />
               </div>
               <div></div>
               <div className="col-span-full sm:col-span-3">
@@ -104,26 +104,26 @@ const MemberId = () => {
           
         </form>
 
-        {member.project_manager != 0 && (
+        {member.project_manager !== 0 && (
           <div className='bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 p-8'>
             <h1>Project Handle :</h1>
-            <div class="flex flex-col py-8">
-              <div class="overflow-x-auto">
-                <div class="inline-block min-w-full align-middle">
-                  <div class="overflow-hidden shadow">
-                    <table class="min-w-full divide-y divide-gray-200 table-fixed ">
-                      <thead class="bg-gray-100">
+            <div className="flex flex-col py-8">
+              <div className="overflow-x-auto">
+                <div className="inline-block min-w-full align-middle">
+                  <div className="overflow-hidden shadow">
+                    <table className="min-w-full divide-y divide-gray-200 table-fixed ">
+                      <thead className="bg-gray-100">
                         <tr>
-                          <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                          <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                             Project Id
                           </th>
-                          <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                          <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                             Name
                           </th>
-                          <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                          <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                             Description
                           </th>
-                          <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                          <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                             Status
                           </th>
                         </tr>

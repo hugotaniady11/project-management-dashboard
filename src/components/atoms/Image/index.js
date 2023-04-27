@@ -5,7 +5,7 @@ const Image = ({label, image, ...rest}) => {
     <div>
        <p className='block text-base mb-2'>{label}</p>
         <div className='mb-2'>
-          <img src={image} className='w-20 h-20 object-cover rounded-full' {...rest} />
+          <img src={image} className='w-20 h-20 object-cover rounded-full' alt="files" {...rest} />
         </div>
     </div>
   )
