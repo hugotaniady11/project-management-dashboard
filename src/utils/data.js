@@ -48,6 +48,14 @@ export const getMemberById = async(member_id) => {
 
 }
 
+export const createMember = async(payload) => {
+    const member = await axios.post(`${baseUrl}api/members/`, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }})
+    return member
+}
+
 export const deleteMember = async(member_id) => {
     const member = await axios.delete(`${baseUrl}api/members/${member_id}`)
     return member

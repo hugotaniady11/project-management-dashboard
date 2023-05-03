@@ -1,19 +1,18 @@
 import React from 'react'
-import { getAllMembers, deleteMember, getCurrentUser } from '../../utils/data'
+import { getAllMembers, deleteMember, getCurrentUser, createMember } from '../../utils/data'
+import { Input, Button, Dropdown, SearchBar } from '../../components';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
+import { useFormik } from 'formik';
 
 const Members = () => {
     const [members, setMembers] = useState([]);
-    const [page, setPage] = useState(1);
-    const recordsPerPage = 7;
-    const lastIndex = page * recordsPerPage;
-    const firstIndex = lastIndex - recordsPerPage;
-    const records = members.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(members.length / recordsPerPage)
-    const numbers = [...Array(npage + 1).keys()].slice(1);
-    const baseUrl = process.env.REACT_APP_KEWO_API;
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
+    const [search, setSearch] = useState("");
+    const depart = ["Engineering", "Project Management", "Drafter", "Marketing"];
+    // const baseUrl = process.env.REACT_APP_KEWO_API;
 
     const user = getCurrentUser();
     useEffect(() => {
@@ -21,6 +20,71 @@ const Members = () => {
             setMembers(result)
         })
     }, [])
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = members.slice(indexOfFirstItem, indexOfLastItem);
+    const paginationButtons = [];
+    for (let i = 1; i <= Math.ceil(members.length / itemsPerPage); i++) {
+        paginationButtons.push(
+            <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={i === currentPage ? "px-3 py-2 leading-tight text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700" : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"}
+            >
+                {i}
+            </button>
+        );
+    }
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        setSearch(e.target.value);
+    };
+    const markets = currentItems.filter((data) => {
+        return search.toLowerCase() === ''
+            ? data
+            : data.name.toLowerCase().includes(search);
+    }
+    );
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            email: '',
+            department: '',
+            jobTitle: '',
+            file: '',
+        },
+        onSubmit: async (values) => {
+            await createMember(values)
+            swal(`Success! Member has been created`, { icon: 'success' })
+            formik.setFieldValue("name", "");
+            formik.setFieldValue("email", "");
+            formik.setFieldValue("department", "");
+            formik.setFieldValue("jobTitle", "");
+            formik.setFieldValue("file", "");
+            window.location.reload(false)
+        },
+    })
+
+    const handleFormMember = (e) => {
+        formik.setFieldValue(e.target.name, e.target.value)
+    }
+
+    const renderSelect = (arr, selectedVal) => {
+        return (
+            <>
+                <option value="" disabled>Pilih satu</option>
+                {
+                    arr.length && arr.map((val) => {
+                        const value = val.id ? val.id : val
+                        return (<option key={val.id} value={val.id || val} selected={value === selectedVal} >{val.name || val}</option>)
+                    })
+                }
+            </>
+        )
+    }
 
     function deleteMemberById(member_id) {
         return swal({
@@ -73,12 +137,9 @@ const Members = () => {
                     </div>
                     <div className="sm:flex">
                         <div className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 ">
-                            <form className="lg:pr-3" action="#" method="GET">
-                                <label htmlFor="users-search" className="sr-only">Search</label>
-                                <div className="relative mt-1 lg:w-64 xl:w-96">
-                                    <input type="text" name="email" id="users-search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="Search for users" />
-                                </div>
-                            </form>
+                            <div className="relative mt-1 lg:w-64 xl:w-96">
+                                <SearchBar value={search} onChange={handleChange} />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,11 +169,11 @@ const Members = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 ">
-                                    {records.map((data) => (
+                                    {markets.map((data) => (
                                         <tr className="hover:bg-gray-100" key={data.member_id}>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.member_id} </td>
                                             <td className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                                <img className="w-10 h-10 rounded-full" src={`${baseUrl}/${data.file}`} alt={data.name} />
+                                                <img className="w-10 h-10 rounded-full" src={`{data.file}`} alt={data.name} />
 
                                                 <div className="text-sm font-normal text-gray-500 ">
                                                     <div className="text-base font-semibold text-gray-900 "> {data.name} </div>
@@ -124,28 +185,28 @@ const Members = () => {
 
                                             {user.account_type === 'SUPER_ADMIN' || user.account_type === 'ADMIN' ? (
                                                 <td className="p-4 space-x-2 whitespace-nowrap">
-                                                <Link to={`/members/${data.member_id}`}>
-                                                    <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
-                                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
-                                                        Edit user
+                                                    <Link to={`/members/${data.member_id}`}>
+                                                        <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
+                                                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                                                            Edit user
+                                                        </button>
+                                                    </Link>
+                                                    <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300"
+                                                        onClick={() => deleteMemberById(data.member_id)}
+                                                    >
+                                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
+                                                        Delete user
                                                     </button>
-                                                </Link>
-                                                <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300"
-                                                    onClick={() => deleteMemberById(data.member_id)}
-                                                >
-                                                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                                                    Delete user
-                                                </button>
-                                            </td>
+                                                </td>
                                             ) : (
                                                 <td className="p-4 space-x-2 whitespace-nowrap">
-                                                <Link to={`/members/${data.member_id}`}>
-                                                    <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
-                                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
-                                                        See Details
-                                                    </button>
-                                                </Link>
-                                            </td>
+                                                    <Link to={`/members/${data.member_id}`}>
+                                                        <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
+                                                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                                                            See Details
+                                                        </button>
+                                                    </Link>
+                                                </td>
                                             )}
                                         </tr>
                                     ))}
@@ -156,49 +217,57 @@ const Members = () => {
                     </div>
                 </div>
             </div>
-             <div className="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between ">
+            <div className="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between ">
                 <div className="flex items-center space-x-3">
                 </div>
                 <div className="inline-flex -space-x-px mb-4 sm:mb-0">
-                    <ul className='inline-flex -space-x-px'>
-                        <li className='page-item'>
-                            <a 
-                            href="/#" 
-                            className='px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700' 
-                            onClick={prePage}>Prev</a>
-                        </li>
-                        {
-                            numbers.map((n, i) => (
-                                <li className={`page-item ${page === n ? 'active' : '' }`} key={i}>
-                                    <a href='/#' className='px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700' onClick={() => changeCPage(n)}>{n}</a>
-                                </li>
-                            ))
-                        }
-                        <li className='page-item'>
-                            <a href="/#" className='px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ' onClick={nextPage}>Next</a>
-                        </li>
-                    </ul>
+                    {paginationButtons}
                 </div>
             </div>
+            {
+                user.account_type === 'SUPER_ADMIN' || user.account_type === 'ADMIN'
+                    ?
+                    (
+                        <div className="p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
+                            <div className="w-full mb-1">
+                                <div className="mb-4">
+                                    <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl ">Add Members</h1>
+                                </div>
+                                <div className="items-center mb-3  sm:divide-gray-100 sm:mb-0 ">
+                                    <form onSubmit={formik.handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+                                        <fieldset className="rounded-md shadow-sm">
+                                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                                                <div className="col-span-full">
+                                                    <Input label="Name" type="text" name="name" placeholder="Enter Name" onChange={handleFormMember} value={formik.values.name} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="Email" type="email" name="email" placeholder="Enter Email" onChange={handleFormMember} value={formik.values.email} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" onChange={handleFormMember} value={formik.values.jobTitle} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Dropdown label="Department" name="department" onChange={handleFormMember} value={formik.values.department}>
+                                                        {renderSelect(depart)}
+                                                    </ Dropdown>
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="File" type="text" name="file" placeholder="Enter File" onChange={handleFormMember} value={formik.values.file} />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div className='py-4'>
+                                            <Button title="Submit" type="submit" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    ) : ("")}
         </>
     )
 
-    function prePage() {
-        if(page !== 1) {
-            setPage(page - 1)
-        }
-        
-    }
-    function changeCPage(id) {
-        setPage(id)
-        
-    }
-    function nextPage() {
-        if(page !== npage) {
-            setPage(page + 1)
-        }
 
-    }
 }
 
 export default Members

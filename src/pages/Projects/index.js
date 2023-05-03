@@ -1,23 +1,49 @@
 import React from 'react'
-import { getAllProjects } from '../../utils/data'
+import { getAllProjects, getCurrentUser } from '../../utils/data'
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { SearchBar } from '../../components';
 
 const Products = () => {
     const [projects, setProjects] = useState([]);
-    const [page, setPage] = useState(1);
-    const recordsPerPage = 5;
-    const lastIndex = page * recordsPerPage;
-    const firstIndex = lastIndex - recordsPerPage;
-    const records = projects.slice(firstIndex, lastIndex);
-    const npage = Math.ceil(projects.length / recordsPerPage)
-    const numbers = [...Array(npage + 1).keys()].slice(1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
+    const [search, setSearch] = useState("");
+    // const baseUrl = process.env.REACT_APP_KEWO_API;
 
+    const user = getCurrentUser();
     useEffect(() => {
         getAllProjects().then((res) => {
             setProjects(res)
         })
     }, [])
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = projects.slice(indexOfFirstItem, indexOfLastItem);
+    const paginationButtons = [];
+    for (let i = 1; i <= Math.ceil(projects.length / itemsPerPage); i++) {
+        paginationButtons.push(
+            <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={i === currentPage ? "px-3 py-2 leading-tight text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700" : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"}
+            >
+                {i}
+            </button>
+        );
+    }
+
+    const handleChange = (e) => {
+        e.preventDefault();
+        setSearch(e.target.value);
+    };
+    const datas = currentItems.filter((data) => {
+        return search.toLowerCase() === ''
+            ? data
+            : data.name.toLowerCase().includes(search);
+    }
+    );
 
     return (
         <>
@@ -50,12 +76,9 @@ const Products = () => {
                     </div>
                     <div className="sm:flex">
                         <div className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 ">
-                            <form className="lg:pr-3" action="#" method="GET">
-                                <label htmlFor="users-search" className="sr-only">Search</label>
-                                <div className="relative mt-1 lg:w-64 xl:w-96">
-                                    <input type="text" name="email" id="users-search" className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="Search for products" />
-                                </div>
-                            </form>
+                            <div className="relative mt-1 lg:w-64 xl:w-96">
+                                <SearchBar value={search} onChange={handleChange} />
+                            </div>
                             <div className="flex pl-0 mt-3 space-x-1 sm:pl-2 sm:mt-0">
                                 <a href="#" className="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd"></path></svg>
@@ -105,7 +128,7 @@ const Products = () => {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 ">
-                                    {records.map((data) => (
+                                    {datas.map((data) => (
                                         <tr className="hover:bg-gray-100 ">
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap ">{data.project_id}</td>
                                             <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.name} </td>
@@ -147,45 +170,11 @@ const Products = () => {
                 <div className="flex items-center space-x-3">
                 </div>
                 <div className="inline-flex -space-x-px mb-4 sm:mb-0">
-                    <ul className='inline-flex -space-x-px'>
-                        <li className='page-item'>
-                            <a 
-                            href="#" 
-                            className='px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700' 
-                            onClick={prePage}>Prev</a>
-                        </li>
-                        {
-                            numbers.map((n, i) => (
-                                <li className={`page-item ${page === n ? 'active' : '' }`} key={i}>
-                                    <a href='#' className='px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700' onClick={() => changeCPage(n)}>{n}</a>
-                                </li>
-                            ))
-                        }
-                        <li className='page-item'>
-                            <a href="#" className='px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 ' onClick={nextPage}>Next</a>
-                        </li>
-                    </ul>
+                {paginationButtons}
                 </div>
             </div>
         </>
     )
-
-    function prePage() {
-        if(page !== 1) {
-            setPage(page - 1)
-        }
-        
-    }
-    function changeCPage(id) {
-        setPage(id)
-        
-    }
-    function nextPage() {
-        if(page !== npage) {
-            setPage(page + 1)
-        }
-
-    }
 }
 
 export default Products
