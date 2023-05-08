@@ -31,6 +31,8 @@ const IndexRoutes = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/homemain" element={<HomeMain />} />
+              <Route path="/home" element={<Home/>} />
+              <Route path="/homepage" element={<HomePage/>} />
             </>
           )}
         </Routes>
