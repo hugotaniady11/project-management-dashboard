@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, redirect  } from 'react-router-dom'
-import { Login, Register, MainApp, HomeMain, Home, HomePage } from '../../pages';
+import { Login, Register, MainApp, HomeMain, Home, Home2 } from '../../pages';
 import { getCurrentUser } from '../../utils/data';
 
 
@@ -32,7 +32,7 @@ const IndexRoutes = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/homemain" element={<HomeMain />} />
               <Route path="/home" element={<Home/>} />
-              <Route path="/homepage" element={<HomePage/>} />
+              <Route path="/homepage" element={<Home2 />}/>
             </>
           )}
         </Routes>
