@@ -4,7 +4,7 @@ import ReactApexChart from 'react-apexcharts';
 const Donut = () => {
     const state = {
           
-        series: [44, 55, 41, 17, 15],
+        series: [44, 22, 41, 17, 15],
         options: {
           chart: {
             type: 'donut',
