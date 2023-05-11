@@ -1,147 +1,213 @@
 import React from 'react'
-import { getAllMembers, deleteMember } from '../../utils/data'
+import { getAllMembers, deleteMember, getCurrentUser, createMember } from '../../utils/data'
+import { Input, Button, Dropdown, SearchBar } from '../../components';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import swal from 'sweetalert';
+import { useFormik } from 'formik';
 
 const Members = () => {
+    const [members, setMembers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage] = useState(5);
+    const [search, setSearch] = useState("");
+    const depart = ["Engineering", "Project Management", "Drafter", "Marketing"];
+    // const baseUrl = process.env.REACT_APP_KEWO_API;
 
-    const [members, setMembers] = useState([])
-
+    const user = getCurrentUser();
     useEffect(() => {
         getAllMembers().then((result) => {
             setMembers(result)
         })
     }, [])
 
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = members.slice(indexOfFirstItem, indexOfLastItem);
+    const paginationButtons = [];
+    for (let i = 1; i <= Math.ceil(members.length / itemsPerPage); i++) {
+        paginationButtons.push(
+            <button
+                key={i}
+                onClick={() => setCurrentPage(i)}
+                className={i === currentPage ? "px-3 py-2 leading-tight text-gray-500 bg-gray-100 border border-gray-300 hover:bg-gray-100 hover:text-gray-700" : "px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"}
+            >
+                {i}
+            </button>
+        );
+    }
 
+    const handleChange = (e) => {
+        e.preventDefault();
+        setSearch(e.target.value);
+    };
+    const markets = currentItems.filter((data) => {
+        return search.toLowerCase() === ''
+            ? data
+            : data.name.toLowerCase().includes(search);
+    }
+    );
 
-        function deleteMemberById(member_id) {
-            return swal({
-                title: "Do you want to delete member?",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-                .then((res) => {
-                    if (res) {
-                        return deleteMember(member_id)
-                            .then(() => { swal(`Success! Member ID: ${member_id} has been deleted`, { icon: 'success' }) })
-                            .then(() => { window.location.reload(false) })
-                            .catch((e) => {
-                                console.error(e);
-                                swal(`Failed to delete member`, { icon: 'error' });
-                            });
-                    }
-                });
-        }
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            email: '',
+            department: '',
+            jobTitle: '',
+            file: '',
+        },
+        onSubmit: async (values) => {
+            await createMember(values)
+            swal(`Success! Member has been created`, { icon: 'success' })
+            formik.setFieldValue("name", "");
+            formik.setFieldValue("email", "");
+            formik.setFieldValue("department", "");
+            formik.setFieldValue("jobTitle", "");
+            formik.setFieldValue("file", "");
+            window.location.reload(false)
+        },
+    })
+
+    const handleFormMember = (e) => {
+        formik.setFieldValue(e.target.name, e.target.value)
+    }
+
+    const renderSelect = (arr, selectedVal) => {
+        return (
+            <>
+                <option value="" disabled>Pilih satu</option>
+                {
+                    arr.length && arr.map((val) => {
+                        const value = val.id ? val.id : val
+                        return (<option key={val.id} value={val.id || val} selected={value === selectedVal} >{val.name || val}</option>)
+                    })
+                }
+            </>
+        )
+    }
+
+    function deleteMemberById(member_id) {
+        return swal({
+            title: "Do you want to delete member?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((res) => {
+                if (res) {
+                    return deleteMember(member_id)
+                        .then(() => { swal(`Success! Member ID: ${member_id} has been deleted`, { icon: 'success' }) })
+                        .then(() => { window.location.reload(false) })
+                        .catch((e) => {
+                            console.error(e);
+                            swal(`Failed to delete member`, { icon: 'error' });
+                        });
+                }
+            });
+    }
 
     return (
         <>
-            <div class="p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
-                <div class="w-full mb-1">
-                    <div class="mb-4">
-                        <nav class="flex mb-5" aria-label="Breadcrumb">
-                            <ol class="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
-                                <li class="inline-flex items-center">
-                                    <a href="#" class="inline-flex items-center text-gray-700 hover:text-primary-600 ">
-                                        <svg class="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+            <div className="p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
+                <div className="w-full mb-1">
+                    <div className="mb-4">
+                        <nav className="flex mb-5" aria-label="Breadcrumb">
+                            <ol className="inline-flex items-center space-x-1 text-sm font-medium md:space-x-2">
+                                <li className="inline-flex items-center">
+                                    <a href="/#" className="inline-flex items-center text-gray-700 hover:text-primary-600 ">
+                                        <svg className="w-5 h-5 mr-2.5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
                                         Home
                                     </a>
                                 </li>
                                 <li>
-                                    <div class="flex items-center">
-                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                                        <a href="#" class="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 ">Members</a>
+                                    <div className="flex items-center">
+                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                                        <a href="/#" className="ml-1 text-gray-700 hover:text-primary-600 md:ml-2 ">Members</a>
                                     </div>
                                 </li>
                                 <li>
-                                    <div class="flex items-center">
-                                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                                        <span class="ml-1 text-gray-400 md:ml-2" aria-current="page">List</span>
+                                    <div className="flex items-center">
+                                        <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd"></path></svg>
+                                        <span className="ml-1 text-gray-400 md:ml-2" aria-current="page">List</span>
                                     </div>
                                 </li>
                             </ol>
                         </nav>
-                        <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl ">All Members</h1>
+                        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl ">All Members</h1>
                     </div>
-                    <div class="sm:flex">
-                        <div class="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 ">
-                            <form class="lg:pr-3" action="#" method="GET">
-                                <label for="users-search" class="sr-only">Search</label>
-                                <div class="relative mt-1 lg:w-64 xl:w-96">
-                                    <input type="text" name="email" id="users-search" class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5" placeholder="Search for users" />
-                                </div>
-                            </form>
+                    <div className="sm:flex">
+                        <div className="items-center hidden mb-3 sm:flex sm:divide-x sm:divide-gray-100 sm:mb-0 ">
+                            <div className="relative mt-1 lg:w-64 xl:w-96">
+                                <SearchBar value={search} onChange={handleChange} />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col m-8">
-                <div class="overflow-x-auto">
-                    <div class="inline-block min-w-full align-middle">
-                        <div class="overflow-hidden shadow">
-                            <table class="min-w-full divide-y divide-gray-200 table-fixed ">
-                                <thead class="bg-gray-100">
+            <div className="flex flex-col m-8">
+                <div className="overflow-x-auto">
+                    <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden shadow">
+                            <table className="min-w-full divide-y divide-gray-200 table-fixed ">
+                                <thead className="bg-gray-100">
                                     <tr>
-                                        <th scope="col" class="p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox" class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 " />
-                                                <label for="checkbox-all" class="sr-only">checkbox</label>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                                        <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                                             Member Id
                                         </th>
-                                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                                        <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                                             Name
                                         </th>
-                                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                                        <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                                             Job Title
                                         </th>
-                                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                                        <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                                             Department
                                         </th>
-                                        <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
+                                        <th scope="col" className="p-4 text-xs font-medium text-left text-gray-500 uppercase ">
                                             Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200 ">
-                                    {members.map((member) => (
-                                        <tr className="hover:bg-gray-100" key={member.member_id}>
-                                            <td className="w-4 p-4">
-                                                <div className="flex items-center">
-                                                    <input id="checkbox-{{ member.id }}" aria-describedby="checkbox-1" type="checkbox" class="w-4 h-4 border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 " />
-                                                    <label for="checkbox-{{ member.id }}" className="sr-only">checkbox</label>
-                                                </div>
-                                            </td>
-                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {member.member_id} </td>
+                                    {markets.map((data) => (
+                                        <tr className="hover:bg-gray-100" key={data.member_id}>
+                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.member_id} </td>
                                             <td className="flex items-center p-4 mr-12 space-x-6 whitespace-nowrap">
-                                                <img className="w-10 h-10 rounded-full" src="https://www.radiovenusfm.com/wp-content/uploads/2019/01/portrait-square-10.jpg" alt="avatar" />
+                                                <img className="w-10 h-10 rounded-full" src={`{data.file}`} alt={data.name} />
 
                                                 <div className="text-sm font-normal text-gray-500 ">
-                                                    <div className="text-base font-semibold text-gray-900 "> {member.name} </div>
-                                                    <div className="text-sm font-normal text-gray-500 "> {member.email} </div>
+                                                    <div className="text-base font-semibold text-gray-900 "> {data.name} </div>
+                                                    <div className="text-sm font-normal text-gray-500 "> {data.email} </div>
                                                 </div>
                                             </td>
-                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {member.jobTitle} </td>
-                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {member.department} </td>
+                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.jobTitle} </td>
+                                            <td className="p-4 text-base font-medium text-gray-900 whitespace-nowrap "> {data.department} </td>
 
-                                            <td className="p-4 space-x-2 whitespace-nowrap">
-                                                <Link to={`/members/${member.member_id}`}>
-                                                    <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
-                                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
-                                                        Edit user
+                                            {user.account_type === 'SUPER_ADMIN' || user.account_type === 'ADMIN' ? (
+                                                <td className="p-4 space-x-2 whitespace-nowrap">
+                                                    <Link to={`/members/${data.member_id}`}>
+                                                        <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
+                                                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                                                            Edit user
+                                                        </button>
+                                                    </Link>
+                                                    <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300"
+                                                        onClick={() => deleteMemberById(data.member_id)}
+                                                    >
+                                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
+                                                        Delete user
                                                     </button>
-                                                </Link>
-                                                <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300"
-                                                onClick={()=>deleteMemberById(member.member_id)}
-                                                >
-                                                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                                                    Delete user
-                                                </button>
-                                            </td>
+                                                </td>
+                                            ) : (
+                                                <td className="p-4 space-x-2 whitespace-nowrap">
+                                                    <Link to={`/members/${data.member_id}`}>
+                                                        <button type="button" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 ">
+                                                            <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fillRule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clipRule="evenodd"></path></svg>
+                                                            See Details
+                                                        </button>
+                                                    </Link>
+                                                </td>
+                                            )}
                                         </tr>
                                     ))}
 
@@ -152,28 +218,56 @@ const Members = () => {
                 </div>
             </div>
             <div className="sticky bottom-0 right-0 items-center w-full p-4 bg-white border-t border-gray-200 sm:flex sm:justify-between ">
-                <div className="flex items-center mb-4 sm:mb-0">
-                    <a href="#" className="inline-flex justify-center p-1 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 ">
-                        <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                    </a>
-                    <a href="#" className="inline-flex justify-center p-1 mr-2 text-gray-500 rounded cursor-pointer hover:text-gray-900 hover:bg-gray-100 ">
-                        <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                    </a>
-                    <span className="text-sm font-normal text-gray-500">Showing <span class="font-semibold text-gray-900 ">1-20</span> of <span class="font-semibold text-gray-900 ">2290</span></span>
-                </div>
                 <div className="flex items-center space-x-3">
-                    <a href="#" class="inline-flex items-center justify-center flex-1 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-600 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 ">
-                        <svg class="w-5 h-5 mr-1 -ml-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                        Previous
-                    </a>
-                    <a href="#" class="inline-flex items-center justify-center flex-1 px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-600 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 ">
-                        Next
-                        <svg class="w-5 h-5 ml-1 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-                    </a>
+                </div>
+                <div className="inline-flex -space-x-px mb-4 sm:mb-0">
+                    {paginationButtons}
                 </div>
             </div>
+            {
+                user.account_type === 'SUPER_ADMIN' || user.account_type === 'ADMIN'
+                    ?
+                    (
+                        <div className="p-8 bg-white block sm:flex items-center justify-between border-b border-gray-200 lg:mt-1.5 ">
+                            <div className="w-full mb-1">
+                                <div className="mb-4">
+                                    <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl ">Add Members</h1>
+                                </div>
+                                <div className="items-center mb-3  sm:divide-gray-100 sm:mb-0 ">
+                                    <form onSubmit={formik.handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" >
+                                        <fieldset className="rounded-md shadow-sm">
+                                            <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
+                                                <div className="col-span-full">
+                                                    <Input label="Name" type="text" name="name" placeholder="Enter Name" onChange={handleFormMember} value={formik.values.name} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="Email" type="email" name="email" placeholder="Enter Email" onChange={handleFormMember} value={formik.values.email} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="Job Title" type="text" name="jobTitle" placeholder="Enter Job Title" onChange={handleFormMember} value={formik.values.jobTitle} />
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Dropdown label="Department" name="department" onChange={handleFormMember} value={formik.values.department}>
+                                                        {renderSelect(depart)}
+                                                    </ Dropdown>
+                                                </div>
+                                                <div className="col-span-full">
+                                                    <Input label="File" type="text" name="file" placeholder="Enter File" onChange={handleFormMember} value={formik.values.file} />
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                        <div className='py-4'>
+                                            <Button title="Submit" type="submit" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    ) : ("")}
         </>
     )
+
+
 }
 
 export default Members
