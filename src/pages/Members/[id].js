@@ -77,7 +77,7 @@ const MemberId = () => {
           <fieldset className="rounded-md shadow-sm">
             <div className="grid grid-cols-6 gap-4 col-span-full lg:col-span-3">
             <div className="col-span-full sm:col-span-3">
-                <Image label="Picture" placeholder="Enter Picture" src={`${baseUrl}/${member.file}`} />
+                <Image placeholder="Enter Picture" src={member.file} />
               </div>
               <div></div>
               <div className="col-span-full sm:col-span-3">

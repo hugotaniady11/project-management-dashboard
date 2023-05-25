@@ -4,6 +4,10 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { Input, Button } from '../../components';
 import { httpClient } from '../../utils/data';
+import { GoogleLogin } from 'react-google-login'
+import axios from 'axios';
+
+const clientId = process.env.CLIENT_ID
 
 function Login() {
   const navigate = useNavigate();
@@ -40,6 +44,31 @@ function Login() {
     },
   });
 
+  // const responseGoogle = async (response) => {
+  //   // Handle the Google login response here
+  //   try {
+  //     if (response && response.profileObj && response.tokenId) {
+  //       const { profileObj, tokenId } = response;
+  
+  //       const user = {
+  //         email: profileObj.email,
+  //         password: '', // You can set a default password or handle it differently
+  //       };
+  
+  //       // Send the user data to your backend for authentication
+  //       const res = await axios.post('/api/login/google', user);
+  //       console.log(res.data);
+  //       // Handle the response from the backend
+  //     } else {
+  //       // Handle the case when the necessary properties are missing in the response object
+  //       console.error('Invalid response object');
+  //     }
+  //   } catch (error) {
+  //     // Handle any errors that occur during the request
+  //     console.error(error);
+  //   }
+  // };
+
   return (
     <>
       <div className="flex justify-center items-center h-screen bg-kec-blue">
@@ -67,6 +96,16 @@ function Login() {
 
           </div>
         </form>
+        
+        {/* <div>
+        <GoogleLogin
+        clientId="522469977676-ekc4kssvg2v9q9si2ro97bt1pap6642j.apps.googleusercontent.com"
+        buttonText="Login with Google"
+        onSuccess={responseGoogle}
+        onFailure={responseGoogle}
+        cookiePolicy={'single_host_origin'}
+      />
+        </div> */}
       </div>
     </>
   );
